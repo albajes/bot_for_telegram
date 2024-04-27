@@ -1,0 +1,17 @@
+version: "3.12"
+
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    command: >
+      sh -c "pip install -r requirements.txt && python main.py"
+    expose:
+      - 8000
+    volumes:
+      - .:/code
+    environment:
+      - DEBUG=True
+    env_file:
+      - .env
