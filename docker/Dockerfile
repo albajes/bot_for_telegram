@@ -1,4 +1,4 @@
-FROM python:3.12-bullseye
+FROM joyzoursky/python-chromedriver:3.9-selenium
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 WORKDIR /code

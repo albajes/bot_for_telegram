@@ -24,7 +24,11 @@ async def set_value_to_none(url, username: str) -> None:
 
 async def login_in_macroserver() -> webdriver:
     options = Options()
-    options.add_argument('--headless=new')
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-gpu')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument("--window-size=1200,800")
     driver = webdriver.Chrome(options=options)
     driver.get(LOGIN_URL)
     login_element = driver.find_element(By.CLASS_NAME, 'form-control')
@@ -36,7 +40,7 @@ async def login_in_macroserver() -> webdriver:
     return driver
 
 
-async def check_mark(username: str, driver: webdriver, url: str) -> bool | None:
+async def check_mark(username: str, driver: webdriver, url: str):
     driver.get(url)
     distribution_button = driver.find_elements(By.XPATH, '//select')
     select = Select(distribution_button[17])
