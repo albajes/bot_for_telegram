@@ -11,7 +11,7 @@ MAIN_PASSWORD = os.environ.get('MAIN_PASSWORD')
 LOGIN_URL = os.environ.get('LOGIN_URL')
 NA_YASNOY = os.environ.get('NA_YASNOY')
 
-MEMBERS = {'albajes': '78456', 'r_dmitriev': '77975', 'epanchintsevan': '78456',
+MEMBERS = {'stanislavshindin': '78456', 'albajes': '78456', 'r_dmitriev': '77975', 'epanchintsevan': '78456',
            'danil_praktika': '78315', 'Praktika_development': '78589', 'PraktikaAnna': '78576',
            'PraktikaPRODAGI': '77860', 'gk_temp': '77952', 'Mariapraktika': '79713',
            'Nikita_praktika': '78653', 'LaninaTL': '78317', 'Pratika_Larisa': '77975'}
