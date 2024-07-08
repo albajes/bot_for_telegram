@@ -1,10 +1,13 @@
+import time
+
 from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 from middleware import UserCheckMiddleware
 from settings import MacroserverURLS, NA_YASNOY
-from methods import set_value_to_true, set_value_to_none, login_in_macroserver, click_and_save, check_mark
+from methods import set_value_to_true, set_value_to_none, login_in_macroserver, click_and_save, check_mark, \
+    check_mark_macrocatalog
 
 
 router = Router()
@@ -78,21 +81,31 @@ async def reject(msg: Message):
 async def accept_na_yasnoy(msg: Message):
     await msg.reply('Пару секунд...', reply_markup=ReplyKeyboardRemove())
     driver = await login_in_macroserver()
-    value = await check_mark(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
-    if value:
-        await msg.reply('Вы уже принимаете заявки "На ясной"', reply_markup=main_keyboard)
-    else:
+
+    value_macrocatalog = await check_mark_macrocatalog(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
+    if value_macrocatalog is None:
         await click_and_save(driver=driver, username=msg.from_user.username)
-        await msg.reply('Теперь вы принимаете заявки "На ясной"', reply_markup=main_keyboard)
+        time.sleep(1)
+
+    value = await check_mark(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
+    if value is None:
+        await click_and_save(driver=driver, username=msg.from_user.username)
+
+    await msg.reply('Вы принимаете заявки "На ясной"', reply_markup=main_keyboard)
 
 
 @router.message(F.text.lower() == 'не принимать заявки "на ясной"')
 async def reject_na_yasnoy(msg: Message):
     await msg.reply('Пару секунд...', reply_markup=ReplyKeyboardRemove())
     driver = await login_in_macroserver()
-    value = await check_mark(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
-    if value is None:
-        await msg.reply('Вы уже не принимаете заявки "На ясной"', reply_markup=main_keyboard)
-    else:
+
+    value_macrocatalog = await check_mark_macrocatalog(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
+    if value_macrocatalog:
         await click_and_save(driver=driver, username=msg.from_user.username)
-        await msg.reply('Теперь вы не принимаете заявки "На ясной"', reply_markup=main_keyboard)
+        time.sleep(1)
+
+    value = await check_mark(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
+    if value:
+        await click_and_save(driver=driver, username=msg.from_user.username)
+
+    await msg.reply('Вы не принимаете заявки "На ясной"', reply_markup=main_keyboard)

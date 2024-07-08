@@ -61,3 +61,15 @@ async def click_and_save(driver: webdriver, username: str) -> None:
     button_element_save = driver.find_element(By.XPATH, "//button[@type='submit'][@class='btn btn-success m-b-16']")
     button_element_save.click()
     button_element_save.click()
+
+
+async def check_mark_macrocatalog(username: str, driver: webdriver, url: str):
+    driver.get(url)
+    distribution_button = driver.find_elements(By.XPATH, '//select')
+    select = Select(distribution_button[8])
+    select.select_by_value('round_robin')
+    button_element_of_members = driver.find_elements(By.XPATH, "//div[@class='ui-multiselect']")
+    button_element_of_members[4].click()
+    button_element_check_macrocatalog = driver.find_element(By.XPATH, f"//input[@type='checkbox'][@value='{MEMBERS[username]}']")
+    value = button_element_check_macrocatalog.get_attribute('checked')
+    return value
