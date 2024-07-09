@@ -6,9 +6,7 @@ from aiogram.types import Message, KeyboardButton, ReplyKeyboardMarkup, ReplyKey
 
 from middleware import UserCheckMiddleware
 from settings import MacroserverURLS, NA_YASNOY
-from methods import set_value_to_true, set_value_to_none, login_in_macroserver, click_and_save, check_mark, \
-    check_mark_macrocatalog
-
+from methods import set_value_to_true, set_value_to_none
 
 router = Router()
 router.message.middleware(UserCheckMiddleware())
@@ -80,32 +78,13 @@ async def reject(msg: Message):
 @router.message(F.text.lower() == 'принимать заявки "на ясной"')
 async def accept_na_yasnoy(msg: Message):
     await msg.reply('Пару секунд...', reply_markup=ReplyKeyboardRemove())
-    driver = await login_in_macroserver()
-
-    value_macrocatalog = await check_mark_macrocatalog(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
-    if value_macrocatalog is None:
-        await click_and_save(driver=driver, username=msg.from_user.username)
-        time.sleep(1)
-
-    value = await check_mark(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
-    if value is None:
-        await click_and_save(driver=driver, username=msg.from_user.username)
-
+    await set_value_to_true(username=msg.from_user.username, url=NA_YASNOY)
     await msg.reply('Вы принимаете заявки "На ясной"', reply_markup=main_keyboard)
 
 
 @router.message(F.text.lower() == 'не принимать заявки "на ясной"')
 async def reject_na_yasnoy(msg: Message):
     await msg.reply('Пару секунд...', reply_markup=ReplyKeyboardRemove())
-    driver = await login_in_macroserver()
-
-    value_macrocatalog = await check_mark_macrocatalog(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
-    if value_macrocatalog:
-        await click_and_save(driver=driver, username=msg.from_user.username)
-        time.sleep(1)
-
-    value = await check_mark(username=msg.from_user.username, driver=driver, url=NA_YASNOY)
-    if value:
-        await click_and_save(driver=driver, username=msg.from_user.username)
-
+    await set_value_to_none(username=msg.from_user.username, url=NA_YASNOY)
     await msg.reply('Вы не принимаете заявки "На ясной"', reply_markup=main_keyboard)
+

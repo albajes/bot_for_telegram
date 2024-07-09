@@ -39,3 +39,4 @@ class MacroserverURLS(Enum):
     GK_PRAKTIKA_RU = os.environ.get('GK_PRAKTIKA_RU')
     TEST_IDA_RU = os.environ.get('TEST_IDA_RU')
     ACTION_DN7_RU = os.environ.get('ACTION_DN7_RU')
+    DOM_7_SU = os.environ.get('DOM_7_SU')

@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
@@ -8,17 +10,31 @@ from settings import LOGIN_URL, MAIN_LOGIN, MAIN_PASSWORD, MEMBERS
 
 async def set_value_to_true(url, username: str) -> None:
     driver = await login_in_macroserver()
+
+    value_macrocatalog = await check_mark_macrocatalog(username=username, driver=driver, url=url)
+    if value_macrocatalog is None:
+        await click_and_save(driver=driver, username=username)
+        time.sleep(0.1)
+
     value = await check_mark(driver=driver, username=username, url=url)
     if value is None:
         await click_and_save(driver=driver, username=username)
+        time.sleep(0.1)
     driver.close()
 
 
 async def set_value_to_none(url, username: str) -> None:
     driver = await login_in_macroserver()
+
+    value_macrocatalog = await check_mark_macrocatalog(username=username, driver=driver, url=url)
+    if value_macrocatalog:
+        await click_and_save(driver=driver, username=username)
+        time.sleep(0.1)
+
     value = await check_mark(driver=driver, username=username, url=url)
     if value:
         await click_and_save(driver=driver, username=username)
+        time.sleep(0.1)
     driver.close()
 
 
@@ -69,7 +85,10 @@ async def check_mark_macrocatalog(username: str, driver: webdriver, url: str):
     select = Select(distribution_button[8])
     select.select_by_value('round_robin')
     button_element_of_members = driver.find_elements(By.XPATH, "//div[@class='ui-multiselect']")
-    button_element_of_members[4].click()
+    if len(button_element_of_members) == 14:
+        button_element_of_members[3].click()
+    else:
+        button_element_of_members[4].click()
     button_element_check_macrocatalog = driver.find_element(By.XPATH, f"//input[@type='checkbox'][@value='{MEMBERS[username]}']")
     value = button_element_check_macrocatalog.get_attribute('checked')
     return value
